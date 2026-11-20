@@ -1,3 +1,12 @@
+/*
+ * V2EX Neumorphism — Soft Clay / 柔陶
+ * 基于 yuyinws/v2ex-theme v1.5.0 的 v2ex-claude.css 改编。
+ * 原文件：https://cdn.jsdelivr.net/gh/yuyinws/v2ex-theme@v1.5.0/v2ex-claude.css
+ * 独立主题：完整替换原自定义 CSS，不需要再导入 Claude 或 Geist。
+ * 无远程字体、图片或脚本依赖。站点原有资源仍由 V2EX 加载。
+ * 主题遵循 V2EX 的 data-site-theme / Night 状态；未指定时跟随系统。
+ */
+
 /* 材质、文字与陶色强调。阴影只用于容器和控件，正文保持平整。 */
 :root:root {
   color-scheme: light dark;
@@ -773,5 +782,136 @@ body { min-width: 0 !important; font-family: var(--vc-ui) !important; }
   :is(#Wrapper, #Top, #site-header) :is(.message, .problem) {
     border-color: CanvasText;
     box-shadow: none;
+  }
+}
+
+/* V2EX Neumorphism · 分页优化
+ * 可追加到已安装的柔陶主题末尾；新版完整主题已包含本段。
+ * 保留 type=number 的原生步进、min/max 及现有回车跳转处理。
+ */
+:is(#Wrapper, #Top, #site-header, #Bottom) input.page_input {
+  box-sizing: border-box;
+  width: 4.75rem;
+  max-width: 100%;
+  min-height: 34px;
+  margin-block: 3px;
+  padding: 5px 7px;
+  border: 1px solid var(--vc-line);
+  border-radius: 10px;
+  background: var(--vc-sheet);
+  color: var(--vc-ink);
+  box-shadow: var(--vn-inset);
+  font: 500 14px/1.4 var(--vc-ui);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  vertical-align: middle;
+  caret-color: var(--vc-clay);
+}
+/* focus 也覆盖鼠标点击，避免站点旧的灰色焦点边框盖住主题。 */
+:is(#Wrapper, #Top, #site-header, #Bottom) input.page_input:focus {
+  border-color: var(--vc-clay);
+  background: var(--vc-sheet);
+  color: var(--vc-ink);
+}
+:is(#Wrapper, #Top, #site-header, #Bottom) input.page_input:focus-visible {
+  outline: 2px solid var(--vc-clay);
+  outline-offset: 3px;
+}
+:is(#Wrapper, #Top, #site-header, #Bottom) input.page_input:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+#Wrapper :is(.page_normal, .page_current) {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 34px;
+  margin-block: 3px;
+  padding: 5px 9px;
+  border-radius: 10px;
+  font: 500 13px/1.4 var(--vc-ui);
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+  text-decoration: none;
+}
+#Wrapper .page_current { color: var(--vc-clay); font-weight: 600; }
+@media (hover: hover) {
+  :is(#Wrapper, #Top, #site-header, #Bottom) input.page_input:not(:disabled):not(:focus):hover {
+    border-color: var(--vc-control);
+  }
+}
+@media (forced-colors: active) {
+  :is(#Wrapper, #Top, #site-header, #Bottom) input.page_input {
+    border-color: ButtonText;
+    box-shadow: none;
+  }
+}
+
+/* V2EX Neumorphism · 数字步进箭头
+ * 追加到现有柔陶主题末尾；最新版完整主题已包含。
+ * 仅重绘浏览器的原生步进区域，保留上下半区点击、长按和键盘操作。
+ * Blink/WebKit 专用样式入口；不支持时继续显示原生箭头。
+ */
+@supports selector(input::-webkit-inner-spin-button) {
+  :is(#Wrapper, #Top, #site-header, #Bottom) input.page_input[type="number"] {
+    width: 5.75rem;
+    height: 34px;
+    padding-block: 3px;
+  }
+  :is(#Wrapper, #Top, #site-header, #Bottom) input.page_input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
+    width: 22px;
+    height: 24px;
+    margin-inline: 6px 0;
+    padding: 0;
+    border: 1px solid var(--vc-line);
+    border-radius: 6px;
+    opacity: 1;
+    cursor: pointer;
+    background-color: var(--vc-sheet);
+    /* 两组三角 + 分隔线均使用主题颜色，无额外图片请求。 */
+    background-image:
+      linear-gradient(135deg, transparent 50%, var(--vc-muted) 50%),
+      linear-gradient(225deg, transparent 50%, var(--vc-muted) 50%),
+      linear-gradient(45deg, transparent 50%, var(--vc-muted) 50%),
+      linear-gradient(315deg, transparent 50%, var(--vc-muted) 50%),
+      linear-gradient(var(--vc-line), var(--vc-line));
+    background-size: 4px 4px, 4px 4px, 4px 4px, 4px 4px, 14px 1px;
+    background-position:
+      calc(50% - 2px) 4px, calc(50% + 2px) 4px,
+      calc(50% - 2px) 15px, calc(50% + 2px) 15px,
+      center center;
+    background-repeat: no-repeat;
+    box-shadow: 2px 2px 4px var(--vn-shadow), -2px -2px 4px var(--vn-light);
+  }
+  @media (hover: hover) {
+    :is(#Wrapper, #Top, #site-header, #Bottom) input.page_input[type="number"]:not(:disabled)::-webkit-inner-spin-button:hover {
+      background-color: var(--vc-hover);
+      border-color: var(--vc-control);
+    }
+  }
+  :is(#Wrapper, #Top, #site-header, #Bottom) input.page_input[type="number"]:not(:disabled)::-webkit-inner-spin-button:active {
+    box-shadow: inset 1px 1px 3px var(--vn-shadow), inset -1px -1px 3px var(--vn-light);
+  }
+  :is(#Wrapper, #Top, #site-header, #Bottom) input.page_input[type="number"]:disabled::-webkit-inner-spin-button {
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  @media (forced-colors: active) {
+    :is(#Wrapper, #Top, #site-header, #Bottom) input.page_input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: auto;
+      appearance: auto;
+      width: auto;
+      height: auto;
+      margin: 0;
+      border: 0;
+      background: none;
+      box-shadow: none;
+    }
   }
 }

@@ -659,3 +659,119 @@ body { min-width: 0 !important; font-family: var(--vc-ui) !important; }
   #Wrapper .box, #Top .box, #site-header .box { border-color: CanvasText !important; }
   #Tabs a.tab_current:any-link, #Wrapper .page_current { border: 2px solid Highlight; }
 }
+
+/* V2EX Neumorphism · 提示框优化
+ * 可直接追加到旧版柔陶主题末尾；新版完整主题已包含这些规则。
+ * .message 是通用通知，不依据图标猜测成功或失败；.problem 保留警告语义。
+ */
+:root:root {
+  --vn-notice-accent: var(--vc-clay);
+  --vn-notice-tint: var(--vc-clay-tint);
+  --vn-warning-accent: light-dark(#795316, #f0c478);
+  --vn-warning-tint: light-dark(#e9dfc9, #3b3326);
+}
+
+:is(#Wrapper, #Top, #site-header) :is(.message, .problem) {
+  --vn-alert-accent: var(--vn-notice-accent);
+  --vn-alert-tint: var(--vn-notice-tint);
+  position: relative;
+  box-sizing: border-box;
+  margin-block: 0 20px;
+  padding: 16px 20px;
+  min-width: 0;
+  border: 1px solid var(--vc-line);
+  border-inline-start: 3px solid var(--vn-alert-accent);
+  border-radius: 14px;
+  background: var(--vc-sheet);
+  color: var(--vc-ink);
+  box-shadow: 4px 4px 10px var(--vn-shadow), -4px -4px 10px var(--vn-light);
+  font: 400 14px/1.7 var(--vc-ui);
+  text-align: start;
+  text-shadow: none;
+  overflow-wrap: anywhere;
+}
+:is(#Wrapper, #Top, #site-header) .problem {
+  --vn-alert-accent: var(--vn-warning-accent);
+  --vn-alert-tint: var(--vn-warning-tint);
+}
+
+/* 无图标时不留空槽；有图标时预留一列，多行文字仍与首行对齐。
+ * 兼容站点把 Font Awesome 图标写成 li 的现有结构。
+ */
+:is(#Wrapper, #Top, #site-header) :is(.message, .problem):has(> :is(.fa, .fas, .far)) {
+  padding-inline-start: 56px;
+}
+:is(#Wrapper, #Top, #site-header) :is(.message, .problem) > :is(.fa, .fas, .far) {
+  position: absolute;
+  inset-inline-start: 15px;
+  top: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 9px;
+  background: var(--vn-alert-tint);
+  color: var(--vn-alert-accent);
+  box-shadow: inset 1px 1px 2px rgb(0 0 0 / .08), inset -1px -1px 2px rgb(255 255 255 / .12);
+  font-size: 13px;
+  line-height: 1;
+}
+:is(#Wrapper, #Top, #site-header) :is(.message, .problem) a:any-link {
+  color: var(--vn-alert-accent);
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}
+:is(#Wrapper, #Top, #site-header) :is(.message, .problem) > :first-child:not(.fa, .fas, .far) {
+  margin-block-start: 0;
+}
+:is(#Wrapper, #Top, #site-header) :is(.message, .problem) > :last-child:not(.fa, .fas, .far) {
+  margin-block-end: 0;
+}
+/* 提示框位于卡片内部时留出边距，不与卡片外轮廓叠在一起。 */
+:is(#Wrapper, #Top, #site-header) .box > :is(.message, .problem) {
+  margin: 14px var(--vc-pad);
+  box-shadow: var(--vn-small);
+}
+
+/* 仅现有可点击提示显示可交互状态；不新增关闭按钮或内容。 */
+@media (hover: hover) {
+  :is(#Wrapper, #Top, #site-header) .message:is([onclick], [role="button"]):hover {
+    background: var(--vc-hover);
+    border-color: var(--vc-control);
+    border-inline-start-color: var(--vn-alert-accent);
+  }
+}
+:is(#Wrapper, #Top, #site-header) .message:is([onclick], [role="button"]):active {
+  box-shadow: var(--vn-inset);
+}
+:is(#Wrapper, #Top, #site-header) :is(.message, .problem):focus-visible {
+  outline: 2px solid var(--vn-alert-accent);
+  outline-offset: 3px;
+}
+@media (max-width: 520px) {
+  :is(#Wrapper, #Top, #site-header) :is(.message, .problem) {
+    padding: 14px 14px;
+    margin-block-end: 16px;
+    border-radius: 12px;
+    line-height: 1.65;
+    box-shadow: var(--vn-small);
+  }
+  :is(#Wrapper, #Top, #site-header) :is(.message, .problem):has(> :is(.fa, .fas, .far)) {
+    padding-inline-start: 52px;
+  }
+  :is(#Wrapper, #Top, #site-header) :is(.message, .problem) > :is(.fa, .fas, .far) {
+    inset-inline-start: 12px;
+    top: 12px;
+  }
+}
+@media (forced-colors: active) {
+  :is(#Wrapper, #Top, #site-header) :is(.message, .problem) {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+}
